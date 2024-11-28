@@ -48,9 +48,8 @@ show_welcome_art() {
 
 # Uninstall function
 uninstall_zen_browser() {
-    show_welcome_art
 
-    log_info "(>_<) Which version of Zen Browser would you like to uninstall?"
+    log_info "(◡︵◡) Which version of Zen Browser would you like to uninstall?"
     log_info "  1) Stable Version"
     log_info "  2) Twilight Version"
     log_info "  0) Go Back"
@@ -73,7 +72,7 @@ uninstall_zen_browser() {
             return
             ;;
         *)
-            log_err "(;-;) Invalid choice. Returning to main menu..."
+            log_err "(◡︵◡) Invalid choice. Returning to main menu..."
             main_menu
             return
             ;;
@@ -83,7 +82,7 @@ uninstall_zen_browser() {
     local desktop_in_local_applications="$local_application_path/$app_name.desktop"
     local app_installation_directory="$installation_directory/$app_name"
 
-    log_warn "(T_T) Preparing to uninstall Zen Browser $app_name..."
+    log_warn "(◡︵◡) Preparing to uninstall Zen Browser $app_name..."
 
     # Remove binary
     if [ -f "$app_bin_in_local_bin" ]; then
@@ -109,7 +108,7 @@ uninstall_zen_browser() {
         log_warn "No installation directory found at $app_installation_directory"
     fi
 
-    log_info "(┬─┬ノ(°-°ノ) Uninstallation complete for Zen Browser $app_name"
+    log_info "(◡︵◡) Uninstallation complete for Zen Browser $app_name"
     
     read -p "Press Enter to continue..." 
     main_menu
@@ -137,7 +136,7 @@ main_menu() {
             uninstall_zen_browser
             ;;
         0)
-            log_info "(⌒‿⌒) Exiting..."
+            log_info "(◡︵◡) Exiting..."
             exit 0
             ;;
         *)
