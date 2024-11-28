@@ -4,7 +4,7 @@
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 # Function to print colored messages
 log_info() {
@@ -22,9 +22,9 @@ log_err() {
 # Function to check if AVX2 is supported
 check_avx2_support() {
     if grep -q avx2 /proc/cpuinfo; then
-        return 0  # AVX2 supported
+        return 0
     else
-        return 1  # AVX2 not supported
+        return 1
     fi
 }
 
@@ -48,7 +48,6 @@ show_welcome_art() {
 
 # Uninstall function
 uninstall_zen_browser() {
-
     log_info "(◡︵◡) Which version of Zen Browser would you like to uninstall?"
     log_info "  1) Stable Version"
     log_info "  2) Twilight Version"
@@ -175,7 +174,7 @@ install_zen_browser() {
     else
         app_name="zen"
         desktop_name="Zen Browser"
-        desktop_description="🌀 Experience tranquillity while browsing the web without people tracking you!"
+        desktop_description="Experience tranquillity while browsing the web without people tracking you!"
         if check_avx2_support; then
             official_package_location="$official_package_location_specific_stable"
             log_warn "Installing Zen Browser Stable (Optimized Version)"
@@ -188,14 +187,15 @@ install_zen_browser() {
     local literal_name_of_installation_directory=".tarball-installations"
     local universal_path_for_installation_directory="$HOME/$literal_name_of_installation_directory"
     local app_installation_directory="$universal_path_for_installation_directory/$app_name"
-    local tar_location=$(mktemp /tmp/zen-browser.XXXXXX.tar.bz2)
+    local tar_location
+    tar_location=$(mktemp /tmp/zen-browser.XXXXXX.tar.bz2)
     local open_tar_application_data_location="zen"
     local local_bin_path="$HOME/.local/bin"
     local local_application_path="$HOME/.local/share/applications"
     local app_bin_in_local_bin="$local_bin_path/$app_name"
     local desktop_in_local_applications="$local_application_path/$app_name.desktop"
     local icon_path="$app_installation_directory/browser/chrome/icons/default/default-128.png"
-    local executable_path=$app_installation_directory/zen
+    local executable_path="$app_installation_directory/zen"
 
     log_info "Zen Browser installation started!"
 
@@ -218,7 +218,7 @@ install_zen_browser() {
     fi
 
     log_info "Downloading the package..."
-    curl -L -o $tar_location $official_package_location
+    curl -L -o "$tar_location" "$official_package_location"
     if [ $? -eq 0 ]; then
         log_info "Download successful!"
     else
@@ -226,34 +226,35 @@ install_zen_browser() {
         exit 1
     fi
 
-    tar -xvjf $tar_location
+    tar -xvjf "$tar_location"
 
     log_info "Creating installation directories..."
-    if [ ! -d $universal_path_for_installation_directory ]; then
-        mkdir $universal_path_for_installation_directory
+    if [ ! -d "$universal_path_for_installation_directory" ]; then
+        mkdir "$universal_path_for_installation_directory"
     fi
 
-    mv $open_tar_application_data_location $app_installation_directory
+    mv "$open_tar_application_data_location" "$app_installation_directory"
 
-    rm $tar_location
+    rm "$tar_location"
 
-    if [ ! -d $local_bin_path ]; then
+    if [ ! -d "$local_bin_path" ]; then
         log_info "Creating $local_bin_path"
-        mkdir $local_bin_path
+        mkdir "$local_bin_path"
     fi
 
-    touch $app_bin_in_local_bin
-    chmod u+x $app_bin_in_local_bin
+    touch "$app_bin_in_local_bin"
+    chmod u+x "$app_bin_in_local_bin"
     echo "#!/bin/bash
-$executable_path" >> $app_bin_in_local_bin
+$executable_path" > "$app_bin_in_local_bin"
 
-    if [ ! -d $local_application_path ]; then
+    if [ ! -d "$local_application_path" ]; then
         log_info "Creating $local_application_path"
-        mkdir $local_application_path
+        mkdir "$local_application_path"
     fi
 
-    touch $desktop_in_local_applications
-    echo "[Desktop Entry]
+    touch "$desktop_in_local_applications"
+    cat > "$desktop_in_local_applications" << EOF
+[Desktop Entry]
 Name=$desktop_name
 Comment=$desktop_description
 Keywords=web;browser;internet
@@ -275,7 +276,8 @@ Exec=$executable_path --private-window %u
 
 [Desktop Action profile-manager-window]
 Name=Open the Profile Manager
-Exec=$executable_path --ProfileManager" >> $desktop_in_local_applications
+Exec=$executable_path --ProfileManager
+EOF
 
     log_info "(｡♥‿♥｡) Installation successful!"
     log_info "Zen Browser is now installed. Have fun! 🐷"
