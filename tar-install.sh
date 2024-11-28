@@ -152,6 +152,7 @@ install_zen_browser() {
     local official_package_location
     local app_name
     local desktop_name
+    local desktop_description
 
     # URLs for both stable and Twilight versions
     local official_package_location_generic_stable="https://github.com/zen-browser/desktop/releases/latest/download/zen.linux-generic.tar.bz2"
@@ -163,6 +164,7 @@ install_zen_browser() {
     if [[ "$is_twilight" == 1 ]]; then
         app_name="zen-twilight"
         desktop_name="Zen Twilight"
+        desktop_description="Nightly Build of Zen Browser"
         if check_avx2_support; then
             official_package_location="$official_package_location_specific_twilight"
             log_warn "Installing Zen Browser Twilight (Optimized Version)"
@@ -172,7 +174,8 @@ install_zen_browser() {
         fi
     else
         app_name="zen"
-        desktop_name="Zen"
+        desktop_name="Zen Browser"
+        desktop_description="🌀 Experience tranquillity while browsing the web without people tracking you!"
         if check_avx2_support; then
             official_package_location="$official_package_location_specific_stable"
             log_warn "Installing Zen Browser Stable (Optimized Version)"
@@ -252,6 +255,7 @@ $executable_path" >> $app_bin_in_local_bin
     touch $desktop_in_local_applications
     echo "[Desktop Entry]
 Name=$desktop_name
+Comment=$desktop_description
 Keywords=web;browser;internet
 Exec=$executable_path %u
 Icon=$icon_path
