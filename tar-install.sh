@@ -194,7 +194,7 @@ install_zen_browser() {
     local local_application_path="$HOME/.local/share/applications"
     local app_bin_in_local_bin="$local_bin_path/$app_name"
     local desktop_in_local_applications="$local_application_path/$app_name.desktop"
-    local icon_path="$app_installation_directory/browser/chrome/icons/default/default-128.png"
+    local icon_path="$app_installation_directory/browser/chrome/icons/default/default128.png"
     local executable_path="$app_installation_directory/zen"
 
     log_info "Zen Browser installation started!"
