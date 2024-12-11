@@ -256,6 +256,7 @@ $executable_path" > "$app_bin_in_local_bin"
     cat > "$desktop_in_local_applications" << EOF
 [Desktop Entry]
 Name=$desktop_name
+GenericName=Web Browser
 Comment=$desktop_description
 Keywords=web;browser;internet
 Exec=$executable_path %u
