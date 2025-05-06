@@ -19,12 +19,12 @@ log_err() {
     echo -e "${RED}[e]${NC} $1"
 }
 
-# Function to check if AVX2 is supported
-check_avx2_support() {
-    if grep -q avx2 /proc/cpuinfo; then
-        return 0
+# Function to check architecture
+check_architecture() {
+    if [[ $(uname -m) == "aarch64" ]]; then
+        return 0  # ARM
     else
-        return 1
+        return 1  # x86_64
     fi
 }
 
@@ -32,13 +32,13 @@ check_avx2_support() {
 show_welcome_art() {
     log_info "╔════════════════════════════════════════════════════╗"
     log_info "║                                                    ║"
-    log_info "║    (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧  Zen Browser Tarball Installer    ║"
+    log_info "║    (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧  Zen Browser Tarball Installer     ║"
     log_info "║                                                    ║"
-    
-    if check_avx2_support; then
-        log_info "║    CPU: AVX2 Supported (Optimized Version)         ║"
+
+    if check_architecture; then
+        log_info "║    Architecture: ARM (aarch64)                     ║"
     else
-        log_info "║    CPU: AVX2 Not Supported (Generic Version)       ║"
+        log_info "║    Architecture: x86_64                            ║"
     fi
 
     log_info "║                                                    ║"
@@ -108,8 +108,8 @@ uninstall_zen_browser() {
     fi
 
     log_info "(◡︵◡) Uninstallation complete for Zen Browser $app_name"
-    
-    read -p "Press Enter to continue..." 
+
+    read -p "Press Enter to continue..."
     main_menu
 }
 
@@ -154,33 +154,33 @@ install_zen_browser() {
     local desktop_description
 
     # URLs for both stable and Twilight versions
-    local official_package_location_generic_stable="https://github.com/zen-browser/desktop/releases/latest/download/zen.linux-generic.tar.bz2"
-    local official_package_location_specific_stable="https://github.com/zen-browser/desktop/releases/latest/download/zen.linux-specific.tar.bz2"
-    local official_package_location_generic_twilight="https://github.com/zen-browser/desktop/releases/download/twilight/zen.linux-generic.tar.bz2"
-    local official_package_location_specific_twilight="https://github.com/zen-browser/desktop/releases/download/twilight/zen.linux-specific.tar.bz2"
+    local official_package_location_arm_stable="https://github.com/zen-browser/desktop/releases/latest/download/zen.linux-aarch64.tar.xz"
+    local official_package_location_x86_64_stable="https://github.com/zen-browser/desktop/releases/latest/download/zen.linux-x86_64.tar.xz"
+    local official_package_location_arm_twilight="https://github.com/zen-browser/desktop/releases/download/twilight/zen.linux-aarch64.tar.xz"
+    local official_package_location_x86_64_twilight="https://github.com/zen-browser/desktop/releases/download/twilight/zen.linux-x86_64.tar.xz"
 
-    # Select appropriate package based on Twilight mode and AVX2 support
+    # Select appropriate package based on Twilight mode and architecture
     if [[ "$is_twilight" == 1 ]]; then
         app_name="zen-twilight"
         desktop_name="Zen Twilight"
         desktop_description="Nightly Build of Zen Browser"
-        if check_avx2_support; then
-            official_package_location="$official_package_location_specific_twilight"
-            log_warn "Installing Zen Browser Twilight (Optimized Version)"
+        if check_architecture; then
+            official_package_location="$official_package_location_arm_twilight"
+            log_warn "Installing Zen Browser Twilight (ARM Version)"
         else
-            official_package_location="$official_package_location_generic_twilight"
-            log_warn "Installing Zen Browser Twilight (Generic Version)"
+            official_package_location="$official_package_location_x86_64_twilight"
+            log_warn "Installing Zen Browser Twilight (x86_64 Version)"
         fi
     else
         app_name="zen"
         desktop_name="Zen Browser"
         desktop_description="Experience tranquillity while browsing the web without people tracking you!"
-        if check_avx2_support; then
-            official_package_location="$official_package_location_specific_stable"
-            log_warn "Installing Zen Browser Stable (Optimized Version)"
+        if check_architecture; then
+            official_package_location="$official_package_location_arm_stable"
+            log_warn "Installing Zen Browser Stable (ARM Version)"
         else
-            official_package_location="$official_package_location_generic_stable"
-            log_warn "Installing Zen Browser Stable (Generic Version)"
+            official_package_location="$official_package_location_x86_64_stable"
+            log_warn "Installing Zen Browser Stable (x86_64 Version)"
         fi
     fi
 
@@ -188,7 +188,7 @@ install_zen_browser() {
     local universal_path_for_installation_directory="$HOME/$literal_name_of_installation_directory"
     local app_installation_directory="$universal_path_for_installation_directory/$app_name"
     local tar_location
-    tar_location=$(mktemp /tmp/zen-browser.XXXXXX.tar.bz2)
+    tar_location=$(mktemp /tmp/zen-browser.XXXXXX.tar.xz)
     local open_tar_application_data_location="zen"
     local local_bin_path="$HOME/.local/bin"
     local local_application_path="$HOME/.local/share/applications"
@@ -226,7 +226,7 @@ install_zen_browser() {
         exit 1
     fi
 
-    tar -xvjf "$tar_location"
+    tar -xvJf "$tar_location"
 
     log_info "Creating installation directories..."
     if [ ! -d "$universal_path_for_installation_directory" ]; then
