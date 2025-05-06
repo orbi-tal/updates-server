@@ -32,7 +32,7 @@ check_architecture() {
 show_welcome_art() {
     log_info "╔════════════════════════════════════════════════════╗"
     log_info "║                                                    ║"
-    log_info "║    (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧  Zen Browser Tarball Installer     ║"
+    log_info "║    (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧  Zen Browser Tarball Installer    ║"
     log_info "║                                                    ║"
 
     if check_architecture; then
